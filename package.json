@@ -1,0 +1,23 @@
+{
+  "name": "codeart",
+  "type": "module",
+  "version": "0.0.1",
+  "scripts": {
+    "dev": "sst bind astro dev --profile=dev",
+    "start": "astro dev",
+    "build": "astro build",
+    "preview": "astro preview",
+    "astro": "astro",
+    "sst:deploy": "sst deploy --profile=dev",
+    "sst:dev": "sst dev --profile=dev"
+  },
+  "dependencies": {
+    "astro": "^3.0.7"
+  },
+  "devDependencies": {
+    "sst": "^2.24.22",
+    "aws-cdk-lib": "2.91.0",
+    "constructs": "10.2.69",
+    "astro-sst": "^2.24.22"
+  }
+}
