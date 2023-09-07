@@ -1,24 +1,20 @@
 ---
-import { Debug } from 'astro:components';
-import Base from '@/templates/Base.astro';
+import Base from './Base.astro';
 import { AppConfig } from '@/utils/AppConfig';
 import {IFrontmatter} from "../types/IFrontMatter";
 import { CTA } from "../partials/CTA";
 import { BlogPost } from "../partials/BlogPost";
-export interface Props {
+export interface ContentProps {
   content: IFrontmatter;
 }
 
-const { content } = Astro.props as Props;
+const { content } = Astro.props as ContentProps;
 const title = `${content.title} - ${AppConfig.site_name}`;
-export const prerender = true;
----
-<Debug {content} />
 console.log(content);
-
+---
 <Base head={{ title, description: content.description }}>
   <BlogPost frontmatter={content}>
-    <slot></slot>
+    <slot/>
   </BlogPost>
 
   <CTA />

@@ -1,0 +1,13 @@
+---
+import { S3Client, ListObjectsCommand } from "@aws-sdk/client-s3";
+const client = new S3Client();
+const input = {
+    Bucket: "codeart-product-collections"
+}
+const command = new ListObjectsCommand(input);
+const response = await client.send(command);
+---
+
+<Section>
+    {response}
+</Section>

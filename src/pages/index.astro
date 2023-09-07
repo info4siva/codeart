@@ -1,6 +1,6 @@
 ---
 
-import Base from '@/templates/Base.astro';
+import Base from '../layouts/Base.astro';
 import { AppConfig } from '@/utils/AppConfig';
 import { sortByDate } from '@/utils/Posts';
 import {IFrontmatter} from "../types/IFrontMatter";
@@ -10,13 +10,13 @@ import { ProjectList } from "../partials/ProjectList";
 import { RecentPosts } from "../partials/RecentPosts";
 import { CTA } from "../partials/CTA";
 
-const allPosts = await Astro.glob<IFrontmatter>('./posts/*.md');
+const allPosts = await Astro.glob<IFrontmatter>('./posts/*.mdx');
 const sortedPosts = sortByDate(allPosts);
 const lastThreePosts = sortedPosts.slice(0, 3);
 
 const { title } = AppConfig;
 const { description } = AppConfig;
-export const prerender = true;
+
 ---
 
 <Base head={{ title, description }}>

@@ -1,32 +1,25 @@
 ---
-import Base from '@/templates/Base.astro';
+import Base from '../../layouts/Base.astro';
 import { AppConfig } from '@/utils/AppConfig';
 import { sortByDate } from '@/utils/Posts';
 import {FrontmatterPage, IFrontmatter} from "../../types/IFrontMatter";
 import { Section, PaginationHeader, BlogGallery, NewerOlderPagination } from "@/components";
 import { CTA } from "../../partials/CTA";
+import {BlogCard} from "../../components";
 
-type GetStaticPaths = {
-  paginate: any;
-}; // Overrides `GetStaticPathsOptions` types from Astro
-
-export async function getStaticPaths({ paginate }: GetStaticPaths) {
-  const allPosts = await Astro.glob<IFrontmatter>('./*.md');
-  const sortedPosts = sortByDate(allPosts);
-
-  // Return a paginated collection of paths for all posts
-  return paginate(sortedPosts, { pageSize: 6 });
-}
-
-interface Props {
+interface ContentProps {
   page: FrontmatterPage;
 }
-const { page } = Astro.props as Props;
+const allPosts = await Astro.glob<IFrontmatter>('../posts/*.mdx');
+const sortedPosts = sortByDate(allPosts);
+const lastThreePosts = sortedPosts.slice(0, 3);
+
+const { page } = Astro.props as ContentProps;
 const titleSuffix = ` - ${AppConfig.site_name}`;
 const title = titleSuffix;
 const description =
   'Blog Pagination';
-export const prerender = true;
+console.log(lastThreePosts);
 ---
 
 <Base head={{ title, description }}>
@@ -38,11 +31,11 @@ export const prerender = true;
   </Section>
 
   <Section>
-    <BlogGallery postList={page.data} />
-  </Section>
-
-  <Section>
-    <NewerOlderPagination page={page} />
+    <div className="grid grid-cols-1 gap-6 md:grid-cols-3">
+      {lastThreePosts.map((elt) => (
+          <BlogCard key={elt.url} instance={elt} />
+      ))}
+    </div>
   </Section>
 
   <CTA />
