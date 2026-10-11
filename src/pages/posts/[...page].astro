@@ -2,19 +2,20 @@
 import Base from '../../layouts/Base.astro';
 import { AppConfig } from '@/utils/AppConfig';
 import { sortByDate } from '@/utils/Posts';
-import {FrontmatterPage, IFrontmatter} from "../../types/IFrontMatter";
-import { Section, PaginationHeader, BlogGallery, NewerOlderPagination } from "@/components";
+import {IFrontmatter} from "../../types/IFrontMatter";
+import type { MarkdownInstance } from 'astro';
+import { Section, PaginationHeader } from "@/components";
 import { CTA } from "../../partials/CTA";
 import {BlogCard} from "../../components";
 
-interface ContentProps {
-  page: FrontmatterPage;
-}
-const allPosts = await Astro.glob<IFrontmatter>('../posts/*.mdx');
+const postModules = import.meta.glob('../posts/*.mdx', { eager: true }) as Record<
+  string,
+  MarkdownInstance<IFrontmatter>
+>;
+const allPosts = Object.values(postModules);
 const sortedPosts = sortByDate(allPosts);
 const lastThreePosts = sortedPosts.slice(0, 3);
 
-const { page } = Astro.props as ContentProps;
 const titleSuffix = ` - ${AppConfig.site_name}`;
 const title = titleSuffix;
 const description =

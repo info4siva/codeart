@@ -1,11 +1,14 @@
 ---
 import { S3Client, ListObjectsCommand } from "@aws-sdk/client-s3";
-const client = new S3Client();
-const input = {
-    Bucket: "codeart-product-collections"
-}
-const command = new ListObjectsCommand(input);
-const response = await client.send(command);
+import { Resource } from "sst";
+import { Section } from "@/components";
+
+// Bucket is linked in sst.config.ts via `link: [bucket, table]` — its name
+// resolves from the SST Resource binding instead of a hardcoded string.
+const client = new S3Client({ region: "us-east-1" });
+const response = await client.send(
+  new ListObjectsCommand({ Bucket: Resource["codeart-product-collections"].name })
+);
 ---
 
 <Section>

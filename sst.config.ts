@@ -1,16 +1,23 @@
-import {SSTConfig} from "sst";
-import {Site} from "./stacks/SiteStack";
-import {StorageStack} from "./stacks/StorageStack";
+/* eslint-disable @typescript-eslint/triple-slash-reference -- SST Ion requires triple-slash references */
+/// <reference path="./.sst/platform/config.d.ts" />
 
-export default {
-  config(_input) {
+import { StorageStack } from "./stacks/StorageStack";
+import { SiteStack } from "./stacks/SiteStack";
+
+export default $config({
+  app(input) {
     return {
       name: "codeart",
-      region: "us-east-1",
+      removal: input?.stage === "production" ? "retain" : "remove",
+      protect: ["production"].includes(input?.stage),
+      home: "aws",
+      providers: {
+        aws: { region: "us-east-1" },
+      },
     };
   },
-  stacks(app) {
-    app.stack(StorageStack);
-    app.stack(Site);
+  async run() {
+    const { bucket, table } = StorageStack();
+    SiteStack({ bucket, table });
   },
-} as SSTConfig;
+});
