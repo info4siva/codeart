@@ -1,13 +1,9 @@
 import { defineConfig } from 'astro/config';
 import react from '@astrojs/react';
 import sitemap from '@astrojs/sitemap';
-import robotsTxt from 'astro-robots-txt';
-import { astroImageTools } from 'astro-imagetools';
-import aws from "astro-sst/lambda";
-import tailwind from '@astrojs/tailwind';
-import { fileURLToPath } from 'url';
-
-import mdx from "@astrojs/mdx";
+import mdx from '@astrojs/mdx';
+import tailwindcss from '@tailwindcss/vite';
+import node from '@astrojs/node';
 
 // https://astro.build/config
 export default defineConfig({
@@ -16,24 +12,16 @@ export default defineConfig({
   srcDir: 'src',
   // Use to generate your sitemap and canonical URLs in your final build.
   trailingSlash: 'always',
-  markdown: {
-    shikiConfig: {
-      // Choose from Shiki's built-in themes (or add your own)
-      // https://github.com/shikijs/shiki/blob/main/docs/themes.md
-      theme: 'monokai'
-    }
+  output: 'server',
+  // Local SSR build/dev adapter. Production deploys go through `sst deploy`,
+  // where the SST Ion Astro component owns the hosting adapter.
+  adapter: node({ mode: 'standalone' }),
+  integrations: [react(), sitemap(), mdx()],
+  vite: {
+    plugins: [tailwindcss()],
   },
-  output: "server",
-  adapter: aws(),
-  integrations: [react(), tailwind({
-    configFile: fileURLToPath(new URL('./tailwind.config.cjs', import.meta.url))
-  }), sitemap(), robotsTxt(), astroImageTools,
-    mdx({
-    syntaxHighlight: 'shiki',
-    shikiConfig: { theme: 'monokai' }})],
   build: {
     // Example: Generate `page.html` instead of `page/index.html` during build.
-    format: 'file'
+    format: 'file',
   },
-
 });

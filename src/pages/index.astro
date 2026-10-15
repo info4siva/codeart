@@ -4,13 +4,18 @@ import Base from '../layouts/Base.astro';
 import { AppConfig } from '@/utils/AppConfig';
 import { sortByDate } from '@/utils/Posts';
 import {IFrontmatter} from "../types/IFrontMatter";
+import type { MarkdownInstance } from 'astro';
 
 import { Hero} from "../partials/Hero";
 import { ProjectList } from "../partials/ProjectList";
 import { RecentPosts } from "../partials/RecentPosts";
 import { CTA } from "../partials/CTA";
 
-const allPosts = await Astro.glob<IFrontmatter>('./posts/*.mdx');
+const postModules = import.meta.glob('./posts/*.mdx', { eager: true }) as Record<
+  string,
+  MarkdownInstance<IFrontmatter>
+>;
+const allPosts = Object.values(postModules);
 const sortedPosts = sortByDate(allPosts);
 const lastThreePosts = sortedPosts.slice(0, 3);
 
